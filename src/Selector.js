@@ -9,9 +9,8 @@ function Selector({ list, onSelected }) {
     };
     return (
         <select value={value} onChange={onChange}>
-            {list.map((val) => (
-                <option value={val} >{val}
-                </option>))}
+            {list.map((val, index) => (
+                <option value={val} key={index} >{val}</option>))}
         </select>
     );
 }

@@ -14,7 +14,7 @@ function Fret({ note, hilight }) {
   );
 }
 
-function String({ open_string_i, index, hilightScale }) {
+function String({ open_string_i, index, frets, hilightScale }) {
   //const [state, setState] = useState({fret:0});
   // const barDown = e => {setState({fret: i})};
   const note = i => {
@@ -28,7 +28,6 @@ function String({ open_string_i, index, hilightScale }) {
     const s = scales[hilightScale[1]];
     return (s.filter(e => (e === i)).length);
   };
-  const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11] //,12,13,14,15];
   return (
     <tr className="string" >
       {frets.map((i) => (<Fret note={note(i)} hilight={hilight(i)} id={index * 6 + i} key={index * 6 + i} />))}
@@ -40,37 +39,51 @@ function String({ open_string_i, index, hilightScale }) {
 function App() {
   const [state, setState] = useState([0, 0]);
 
-  //    const inst = {"strings":["G", "B", "D", "g", "b", "d"]};
+  // const inst = {"strings":["G", "B", "D", "g", "b", "d"]};
   const inst2 = { "strings": [7, 11, 2, 7, 11, 2] };
-  //const [pl] = useState([
-  //    "this", "is", "a"  // , ["list", "of", "words"]
-  //]);
+  const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
   const keyTranslation = {
-    "G": [0, 0],
-    "A": [-2, 0],
-    "B": [-3, 0],
-    "C": [-5, 0],
-    "D": [-7, 0]
+    "G": 0,
+    "A": -2,
+    "Bb": -3,
+    "B": -4,
+    "C": -5,
+    "D": -7,
+    "E": -9,
+    "F": -10
+  };
+  const keys = Object.keys(keyTranslation);
+  const setKey = (v) => {
+    let newState = [...state];
+    newState[0] = keyTranslation[v];
+    setState(newState);
   };
 
-  const keys = ['G', 'A', 'B', 'C', 'D'];
-
-  const setScale = (v) => {
-    //setState(v);
-    console.log(v);
-    setState(keyTranslation[v]);
+  const modeTranslation = {"major":0, "minor":1, "pentatonic":2};
+  const modes = Object.keys(modeTranslation);
+  const setMode = (m) => {
+    let newState = [...state];
+    newState[1] = modeTranslation[m];
+    setState(newState);
   };
-
 
   return (
     <div className="app">
-      <Selector list={keys} onSelected={setScale} />
+      <Selector list={keys} onSelected={setKey} />
+      <Selector list={modes} onSelected={setMode} />
       <table>
+        <thead>
+          <tr>
+            {frets.map((f, i) => <th key={i}>{f}</th>)}
+          </tr>
+        </thead>
         <tbody>
+
           {inst2.strings.reverse().map((s_i, index) => (
             <String
               key={index} id={index}
               index={index}
+              frets={frets}
               open_string_i={s_i}
               hilightScale={state}
             />
