@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import "./App.css";
 import Selector from "./Selector";
 
-function Fret({ note, hilight }) {
+function Fret({ note, hilight, onClick }) {
   const style = () => ({
     backgroundColor: (hilight ? "#22DD88" : "#FFFFFF")
   });
   return (
-    <td className="fret" style={style()} >
+    <td onClick={onClick} className="fret" style={style()} >
       {note}
     </td>
   );
@@ -17,40 +17,46 @@ function Fret({ note, hilight }) {
 function String({ open_string_i, index, frets, hilightScale }) {
   //const [state, setState] = useState({fret:0});
   // const barDown = e => {setState({fret: i})};
+  const fretsLen = frets.length;
   const note = i => {
     const ref_i = (i + open_string_i) % 12;
-    const notes = ['c ', 'c#', 'd ', 'd#', 'e ', 'f ', 'f#', 'g ', 'g#', 'a ', 'a#', 'b '];
+    const notes = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'B♭', 'B'];
     return notes[ref_i];
   };
   const hilight = (ind) => {
-    const scales = [[0, 2, 4, 5, 7, 9, 11], [0, 2, 3, 5, 7, 9, 11], [0, 4, 7, 9]]
+    const scales = [[0, 2, 4, 5, 7, 9, 11], 
+                    [0, 2, 3, 5, 7, 8, 10], [0, 2, 4, 7, 9]]
     const i = (ind + open_string_i + hilightScale[0] + 5) % 12;
     const s = scales[hilightScale[1]];
     return (s.filter(e => (e === i)).length);
   };
   return (
     <tr className="string" >
-      {frets.map((i) => (<Fret note={note(i)} hilight={hilight(i)} id={index * 6 + i} key={index * 6 + i} />))}
+      {frets.map((i) => (<Fret note={note(i)} hilight={hilight(i)} key={index * fretsLen + i} />))}
     </tr>
   );
 }
 
 
 function App() {
-  const [state, setState] = useState([0, 0]);
+  const [state, setState] = useState([0, 0, '']);
 
   // const inst = {"strings":["G", "B", "D", "g", "b", "d"]};
   const inst2 = { "strings": [7, 11, 2, 7, 11, 2] };
-  const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+  const frets = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19];
   const keyTranslation = {
     "G": 0,
+    "G♯": -1,
     "A": -2,
-    "Bb": -3,
+    "B♭": -3,
     "B": -4,
     "C": -5,
+    "C♯": -6,
     "D": -7,
+    "D♯": -8,
     "E": -9,
-    "F": -10
+    "F": -10,
+    "F♯": -11
   };
   const keys = Object.keys(keyTranslation);
   const setKey = (v) => {
