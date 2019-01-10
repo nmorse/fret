@@ -9,14 +9,13 @@ function String({ open_string_i, index, frets, hilightScale, noteClicked }) {
   // const barDown = e => {setState({fret: i})};
   const fretsLen = frets.length;
   const note_i = i => (i + open_string_i) % 12;
-  const hilightSc = [hilightScale.keyIndex, hilightScale.modeIndex];
   const hilight = (ind) => {
-    //console.log(hilightScale);
     const scales = [[0, 2, 4, 5, 7, 9, 11], 
-                    [0, 2, 3, 5, 7, 8, 10], [0, 2, 4, 7, 9]]
-    const i = (ind + open_string_i + hilightSc[0] + 5) % 12;
-    const s = scales[hilightSc[1]];
-    //const noteHiLite = hilightScale.noteSeq[0];
+                    [0, 2, 3, 5, 7, 8, 10], 
+                    [0, 2, 4, 7, 9]]
+    const i = (ind + open_string_i + hilightScale.keyIndex + 5 + 12) % 12;
+    const s = scales[hilightScale.modeIndex];
+
     return (s.filter(e => (e === i)).length);
   };
   return (
@@ -25,7 +24,8 @@ function String({ open_string_i, index, frets, hilightScale, noteClicked }) {
           onClick={noteClicked} 
           note_i={note_i(i)}
           noteHiLite={hilightScale.noteSeq[0] === note_i(i)} 
-          hilight={hilight(i)} key={index * fretsLen + i} />))}
+          hilight={hilight(i)} 
+          key={index * fretsLen + i} />))}
     </tr>
   );
 }
